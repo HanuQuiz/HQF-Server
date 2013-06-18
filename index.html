@@ -1,0 +1,101 @@
+<html>
+<head>
+<!-- Include the jQuery Library -->  
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js">
+</script>
+
+<!-- My jQuery Functions -->
+<script>
+
+$(document).ready(function(){
+	
+	// Clear Page
+	$("#clear-output").click(function(){
+		$("#output").empty();
+	});
+	
+	$("#select-all").click(function(){
+		$.post("FetchArtifacts.php", {question_sync_time:"2013-01-01",quiz_sync_time:"2013-01-01",meta_data:""},
+		function(data,status){
+			$("#output").append(JSON.stringify(data));
+			$("#output").append("<br>");
+		});
+		
+	});
+	
+	$("#select-ddic").click(function(){
+		
+		$.post("FetchArtifacts.php", {question_sync_time:"2013-01-01",quiz_sync_time:"2013-01-01",meta_data:'[{"meta_key":"tag","meta_value":"DDIC"}]'},
+		function(data,status){
+			$("#output").append(JSON.stringify(data));
+			$("#output").append("<br>");
+		});
+		
+	});
+	
+	$("#select-abap").click(function(){
+		
+		$.post("FetchArtifacts.php", {question_sync_time:"2013-01-01",quiz_sync_time:"2013-01-01",meta_data:'[{"meta_key":"tag","meta_value":"ABAP"}]'},
+		function(data,status){
+			$("#output").append(JSON.stringify(data));
+			$("#output").append("<br>");
+		});
+		
+	});
+	
+	$("#select-all-questions").click(function(){
+		
+		$.post("FetchQuestionsData.php", {question_ids:"1,2,3"},
+		function(data,status){
+			$("#output").append(JSON.stringify(data));
+			$("#output").append("<br>");
+		});
+		
+	});
+
+	$("#select-all-quizzes").click(function(){
+		
+		$.post("FetchQuizData.php", {quiz_ids:"1,2,3"},
+		function(data,status){
+			$("#output").append(JSON.stringify(data));
+			$("#output").append("<br>");
+		});
+		
+	});
+	
+});
+
+</script>
+
+</head>
+
+<body>
+
+<p>
+	<input type="button" value="Insert New questions" onClick="javascript:document.location='insert.html';" />
+</p>
+
+<b>Fetch Artifacts Only</b><br>
+<button id="select-all">Select all Questions</button><br>
+<button id="select-ddic">Select DDIC Questions</button><br>
+<button id="select-abap">Select ABAP Questions</button><br>
+
+<br>
+
+<b>Fetch Questions</b><br>
+<button id="select-all-questions">Select all Questions with Data</button><br>
+
+<b>Fetch Quizzes</b><br>
+<button id="select-all-quizzes">Select all Quizzes</button><br>
+
+<br><br>
+
+<p><button id="clear-output">Clear Output Message Area</button></p>
+
+<br />
+<div id="output">
+</div>
+
+</body>
+
+</html>
