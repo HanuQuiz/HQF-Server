@@ -65,7 +65,7 @@ INSERT INTO `questions` (`ID`, `Question`, `Level`, `ChoiceType`, `CreatedAt`) V
 -- Dumping data for table `quiz`
 --
 
-INSERT INTO `quiz` (`QuizId`, `Count`, `Level`, `QuestionIds`, `CreatedBy`) VALUES
+INSERT INTO `quiz` (`QuizId`, `Count`, `Level`, `QuestionIds`, `CreatedAt`) VALUES
 (1, 2, 1, '1,2', '2013-06-11 09:28:02'),
 (2, 2, 1, '2,3', '2013-06-11 09:28:02');
 

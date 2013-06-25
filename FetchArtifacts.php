@@ -12,6 +12,8 @@ if($question_sync_time ==  "" && $quiz_sync_time == ""){
 }
 
 $meta_data = $_POST['meta_data'];
+$meta_data = stripslashes($meta_data);
+
 if($meta_data == ""){
 	$metaData = "";
 }
