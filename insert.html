@@ -15,11 +15,17 @@
 <script>	
 
 $(document).ready(function(){
+	
+	// Clear Page
+	$("#clear-output").click(function(){
+		$("#output").empty();
+	});
 
 	$("#save").click(function()
 	{
 	//alert("Called");
 	//Get the attributes
+	var secret_key = $("#secret-key").val();
 	$question_text = $("#question").val();
 	$level = $("#level").val();
 	$type = $("#ans_type").val();
@@ -37,6 +43,7 @@ $(document).ready(function(){
 	//Save in DB
 		$.post("CreateData.php", 
 		{
+		pwd:secret_key,
 		question_text:$question_text,
 		level:$level,
 		type:$type,
@@ -141,6 +148,8 @@ else if(e.keyCode == 38)  // UP Arrow pressed
 
 <body onLoad="clear_all_inputs();">
 
+<p>Secret Key: <input type="password" id="secret-key">
+
 <p>
 
 <table cellpadding="10" >
@@ -185,6 +194,8 @@ else if(e.keyCode == 38)  // UP Arrow pressed
 	</tr>
 	
 </table>
+
+<p><button id="clear-output">Clear Output Message Area</button></p>
 
 <div id="output"></div>
 </p>
