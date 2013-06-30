@@ -4,51 +4,68 @@ header("Content-type: text/json");
 
 require('hqf-functions.php');
 
-$quiz
-
 // Create DB Connection first
 createDBConnection();
 
-function CreateQuestion( $obj )
-{
-	$quiz = json_decode($obj);
-	$id = UpdateQuestion( $quiz->{'question_text'} , $quiz->{'level'} , $quiz->{'type'} );
+$question_text = $_POST['question_text'];
+$level = $_POST['level'];
+$type = $_POST['type'];
+$options = json_decode($_POST['options']);
+$answers = json_decode($_POST['answers']);
+$answers_no = $_POST['answers_no'];
+$tags = json_decode($_POST['tags']);
+
+//echo json_encode("Question = ".$question_text.", level = ".$level.", Type = ".$type.", Options= ".$options.", Answers =".$answers." , Answers_no = ".$answers_no." , Tags = ".$tags);
+//echo json_encode( Array( 'options' => $options , 'answers' => $answers) );
+
+//$id=0;
+$log = " ----- DataBase Log ------ <br> ";
+
+	$id = UpdateQuestion( $question_text , $level , $type );
 	
-	if($id == 0) return 0;
+	//$id = $id - 0;
+	
+    if($id == 0) echo json_encode("Could Not Insert question");
+	else $log .= "Question ID : ".$id;
 	
 	$opt_id = 0;
-	foreach ( $quiz->{'answer_text'} as $ans) 
+	foreach ( $options as $opt ) 
 	{
 	$opt_id++;
-	$sql = "INSERT INTO options (QuestionId,OptionId,OptionValue) VALUES ('$id','$opt_id','$ans') " ;
-	mysqli_query($linkID,$sql)
+	$sql = "INSERT INTO options (QuestionId,OptionId,OptionValue) VALUES ('$id','$opt_id','$opt') " ;
+	If(mysql_query($sql,$linkID)) $log .= "<br>Option ('$opt_id','$opt') sucessfully inserted";
 	}
 	
-	foreach ( $quiz->{'answer_options'} as $option) 
+	foreach ( $answers as $answer ) 
 	{
-	$sql = "INSERT INTO answers (QuestionId,OptionId) VALUES ('$id','$option') " ;
-	mysqli_query($linkID,$sql)
+	$sql = "INSERT INTO answers (QuestionId,OptionId) VALUES ('$id','$answer') " ;
+	If(mysql_query($sql,$linkID)) $log .= "<br>Answer ('$id','$answer') sucessfully inserted";	
 	}
 	
-	foreach ( $quiz->{'tags'} as $tag) 
+	foreach ( $tags as $tag) 
 	{
-	$sql = "INSERT INTO meta_data (QuestionId,MetaKey,MetaValue) VALUES ('$id',tag,'$tag') " ;
-	mysqli_query($linkID,$sql)
+	$sql = "INSERT INTO meta_data (QuestionId,MetaKey,MetaValue) VALUES ('$id','tag','$tag') " ;
+	If(mysql_query($sql,$linkID)) $log .= "<br>MetaData ('tag','$tag') sucessfully inserted";
 	}
 	
-	return 1;
-}
+	echo json_encode($log);
+	
 
-
-function UpdateQuestion( $question,$level,$type)
+function UpdateQuestion($q, $l, $t)
 {
-	$sql = "INSERT INTO questions (Question,Level,ChoiceType) VALUES ('$question','$level','$type') " ;
-	if(mysqli_query($linkID,$sql)) //successfull entry
+	global $linkID;
+	
+	//echo json_encode("Question = ".$q.", level = ".$l.", Type = ".$t);
+	$qsql = "INSERT INTO questions (Question,Level,ChoiceType) VALUES ('$q','$l','$t')" ;
+	//echo json_encode($linkID);
+	IF( mysql_query($qsql,$linkID) ) //successfull entry
 	{
-		$sql = "SELECT MAX(ID) FROM questions where QuestionId = $qId";
-		$id = mysql_query($sql, $linkID);
-		return $id;
-	}	
+		$qsql = "SELECT MAX(ID) AS ID FROM questions";
+		$row = mysql_query($qsql, $linkID);
+		$id = mysql_fetch_assoc($row);
+		
+		return ($id['ID'] - 0 );
+	}
 }
 
 ?>

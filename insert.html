@@ -12,57 +12,52 @@
 </style>
 
 <!-- My jQuery Functions -->
-<script>
-// quiz object will hold all the values
-$quiz = {
-		question_id:"", //question id
-		question_text:"", // question text, in form of string
-		level:"", // 1-Easy , 2-Medium , 3-Hard
-		type:"", //Type 1=Single Choice, 2=Multiple Choice
-		answer_text:"", // answer texts, this will be multiple arrays
-		answer_options:"",  //Correct answers, array of correct answers
-		answer_no:"", //No of answers
-		tags:"", //Tags in form string, seperated with comma
-		}
+<script>	
 
 $(document).ready(function(){
-		$("#Save").click(function(){
-		
-		prepare_object();
-		
-		/*$.post("CreateQuestion.php", $quiz,
-		function(data,status){
-			var op = JSON.stringify(data);
-			if(op==1) //posted successfully
-			else if(op==0) //Not posted successfully
-		}); */
-	}
-	
-$function prepare_object()
-{
-$quiz.question_text = $("#question").value;
-$quiz.level			= $("#level").value;
-$quiz.type			= $("#ans_type").value;
 
-$answers = new Array();
-$options = new Array();
+	$("#save").click(function()
+	{
+	//alert("Called");
+	//Get the attributes
+	$question_text = $("#question").val();
+	$level = $("#level").val();
+	$type = $("#ans_type").val();
+	$i=0;
+	$options = new Array();
+	$correct_ans = new Array();
+	do{
+	$i = $i - 0 + 1;
+	$ans = $("#ans_txt_"+$i).val();
+	if($ans != "" && $ans!=undefined ) { $options.push( $ans ); $answer_no = $i; }
+	if($("#ans_opt_"+$i).attr('checked') == "checked" ) $correct_ans.push( $i );
+	}while($ans!="" && $ans!=undefined);
+	$tags=$("#tags").val().split(",");
 
-$j = 0;
-for($i=0;$i<no_of_ans;$i++)
-	{ 
-		$answers[$i] = $("#ans_txt_".$i).value; //Answers
-		if( $("#ans_opt_".$i).value == true ) { $options[$j++] = $i; } // Correct Answer
-	}
-	
-$quiz.answer_text = $answers;
-$quiz.answer_options = $options;
+	//Save in DB
+		$.post("CreateData.php", 
+		{
+		question_text:$question_text,
+		level:$level,
+		type:$type,
+		options:JSON.stringify($options),
+		answers:JSON.stringify($correct_ans),
+		answers_no:$answer_no,
+		tags:JSON.stringify($tags),
+		},function(data,status)
+				{	
+					$("#output").append(JSON.stringify(data));
+					//$("#output").append("Over");
+					//alert(JSON.stringify(data));
+				})
 
-alert(json_stringify($quiz));
-}	
+	});
+
+});
 
 </script>
-	
-<script type="text/javascript">	
+
+<script type="text/javascript">
 // Global Variables
 var ans_type=1; //Defaulted to 1
 var no_of_ans=2; //No of Answers, defaulted to 2 (Minimum number)
@@ -70,50 +65,87 @@ var ans_content="";
 
 function answer_type(type)
 {
+ans_type = type;
+if(type == 0)
+	{
+	for(i=1;i<=10;i++)
+		{
+			clear_answer(i); //clear all answers
+		}
+	no_of_ans = 2;
+	return;
+	}
 
-if(type == 0) return;
-ans_type=type;
-no_of_ans=2;
-ans_content="";
-populate_answers(ans_type,no_of_ans);
+var dom;
+for(i=1;i<=10;i++)
+	{
+		dom = document.getElementById("ans_opt_"+i);
+		if(type == 2) dom.type = "checkbox";
+		else if(type == 1) dom.type = "radio";
+		
+		if(i<=no_of_ans) document.getElementById("ans"+i).style.visibility = "visible";
+	}
+	
+	
+}
+
+function clear_answer(ind)
+{
+		//alert(ind);
+		document.getElementById("ans_opt_"+ind).checked = "";
+		document.getElementById("ans_txt_"+ind).value = "";
+		document.getElementById("ans"+ind).style.visibility = "hidden";
 }
 
 function add_answer()
 {
+if(ans_type == 0) return;
+if(no_of_ans == 10) return;
 no_of_ans = no_of_ans - 0 + 1;
-	if(ans_type==1) inp_type="radio";
-	else if(ans_type == 2) inp_type="checkbox";
-ans_content += "<tr><td>"+no_of_ans+". <input type='"+inp_type+"' name='answers' id='ans_opt_"+no_of_ans+"' /></td> <td><input type='text' id='ans_txt_"+no_of_ans+"' class='ans_inp'/></td></tr>";
-populate_answers(ans_type,no_of_ans);
+document.getElementById("ans"+no_of_ans).style.visibility = "visible";
 }
 
-function populate_answers(type,no)
+function remove_answer()
 {
-	var content_obj = document.getElementById("answers_span");
-	var inp_type;
-	
-	if(type==1) inp_type="radio";
-	else if(type == 2) inp_type="checkbox";
-	
-	if(ans_content == "") //first time
+if(no_of_ans == 2) return;
+clear_answer(no_of_ans);
+no_of_ans = no_of_ans - 0 - 1;
+}
+
+function clear_all_inputs()
+{
+document.getElementById("question").value = "";
+document.getElementById("tags").value = "";
+document.getElementById("level").value = "1";
+document.getElementById("ans_type").value = "0";
+answer_type("0");
+}
+
+function handle(e,id)
+{
+if(e.keyCode == 40 || e.keyCode == 13) //DOWN Arrow pressed OR Enter Key Pressed
 	{
-		ans_content += "<tr><td>1. <input type='"+inp_type+"' name='answers' id='ans_opt_1' /></td> <td><input type='text' id='ans_txt_1' class='ans_inp' /></td></tr>";
-		ans_content += "<tr><td>2. <input type='"+inp_type+"' name='answers' id='ans_opt_2' /></td> <td><input type='text' id='ans_txt_2' class='ans_inp' /></td></tr>";
+	next_id = id.replace("ans_txt_","");
+	next_id = next_id - 0 + 1;
+	if( document.getElementById("ans"+next_id).style.visibility == "visible" ) document.getElementById("ans_txt_"+next_id).focus( );
 	}
-		
-	//alert(ans_content);
-	content_obj.innerHTML = "<table>"+ans_content+"</table>";
+else if(e.keyCode == 38)  // UP Arrow pressed
+	{
+	prev_id = id.replace("ans_txt_","");
+	prev_id = prev_id - 0 - 1;
+	if( document.getElementById("ans"+prev_id).style.visibility == "visible" ) document.getElementById("ans_txt_"+prev_id).focus( );
+	}
 }
 
 </script>
 
-<body>
+<body onLoad="clear_all_inputs();">
 
 <p>
 
 <table cellpadding="10" >
 	<tr>
-		<td>Question</td><td><textarea id="question" style="border:none; border-style:dotted; border-width:1px; width:300px; height:150px;" value=""></textarea></td>
+		<td>Question</td><td><textarea id="question" style="border:none; border-style:dotted; border-width:1px; width:350px; height:80px;" value=""></textarea></td>
 	</tr>
 	
 	<tr>
@@ -129,14 +161,32 @@ function populate_answers(type,no)
 	</tr>
 	
 	<tr>
-		<td>Answers</td><td><span id="answers_span"></span></td><td><input type="button" value="Add" onClick="add_answer();"/></td>
+		<td>Answers<br>
+		<img src="images/add.png"  style="width:25px; height:25px; cursor:pointer;" onClick="add_answer();"/>  <img src="images/remove.png" style="width:25px; height:25px; cursor:pointer;" onClick="remove_answer();"/>
+		</td>
+			<td>
+				<table>
+					<tr id="ans1" style="visibility:hidden;" ><td>1. <input type='checkbox' name='answers' id='ans_opt_1' /></td> <td><input type='text' id='ans_txt_1' onkeypress="handle(event,this.id);" class='ans_inp' /></td></tr>
+					<tr id="ans2" style="visibility:hidden;"><td>2. <input type='checkbox' name='answers' id='ans_opt_2' /></td> <td><input type='text' id='ans_txt_2' onkeypress="handle(event,this.id);" class='ans_inp' /></td></tr>
+					<tr id="ans3" style="visibility:hidden;"><td>3. <input type='checkbox' name='answers' id='ans_opt_3' /></td> <td><input type='text' id='ans_txt_3' onkeypress="handle(event,this.id);" class='ans_inp' /></td></tr>
+					<tr id="ans4" style="visibility:hidden;"><td>4. <input type='checkbox' name='answers' id='ans_opt_4' /></td> <td><input type='text' id='ans_txt_4' onkeypress="handle(event,this.id);" class='ans_inp' /></td></tr>
+					<tr id="ans5" style="visibility:hidden;"><td>5. <input type='checkbox' name='answers' id='ans_opt_5' /></td> <td><input type='text' id='ans_txt_5' onkeypress="handle(event,this.id);" class='ans_inp' /></td></tr>
+					<tr id="ans6" style="visibility:hidden;"><td>6. <input type='checkbox' name='answers' id='ans_opt_6' /></td> <td><input type='text' id='ans_txt_6' onkeypress="handle(event,this.id);" class='ans_inp' /></td></tr>
+					<tr id="ans7" style="visibility:hidden;" ><td>7. <input type='checkbox' name='answers' id='ans_opt_7' /></td> <td><input type='text' id='ans_txt_7' onkeypress="handle(event,this.id);" class='ans_inp' /></td></tr>
+					<tr id="ans8" style="visibility:hidden;" ><td>8. <input type='checkbox' name='answers' id='ans_opt_8' /></td> <td><input type='text' id='ans_txt_8' onkeypress="handle(event,this.id);" class='ans_inp' /></td></tr>
+					<tr id="ans9" style="visibility:hidden;" ><td>9. <input type='checkbox' name='answers' id='ans_opt_9' /></td> <td><input type='text' id='ans_txt_9' onkeypress="handle(event,this.id);" class='ans_inp' /></td></tr>
+					<tr id="ans10" style="visibility:hidden;" ><td>10. <input type='checkbox' name='answers' id='ans_opt_10' /></td> <td><input type='text' id='ans_txt_10' onkeypress="handle(event,this.id);" class='ans_inp' /></td></tr>
+				</table>
+			</td>
 	</tr>
 	
 	<tr>
-		<td><button id="Save">Save</button></td>
+		<td><button id="save" >Save</button></td>
 	</tr>
 	
 </table>
+
+<div id="output"></div>
 </p>
 
 </body>
