@@ -13,10 +13,32 @@ function createDBConnection(){
 
 }
 
-function getQuizArtifacts($quiz_sync_time){
+function getQuizArtifacts($quiz_sync_time, $metaData){
 	
 	global $linkID;
-	$sql = "SELECT QuizId, CreatedAt FROM quiz WHERE CreatedAt >= '$quiz_sync_time'";
+	//$sql = "SELECT QuizId, CreatedAt FROM quiz WHERE CreatedAt >= '$quiz_sync_time' AND ActiveStatus = 'X'";
+	$sql = "SELECT q.QuizId, q.CreatedAt FROM quiz";
+	
+	if(empty($metaData)){
+
+		$sql .= " as q WHERE CreatedAt >= '$quiz_sync_time' AND ActiveStatus = 'X'";
+
+	}
+	else{
+	
+		// Since meta data is provided, we need to filter based on this.
+		$sql .= " as q INNER JOIN quiz_meta_data as m ON q.QuizId = m.QuizId WHERE q.CreatedAt >= '$question_sync_time' AND ActiveStatus = 'X'";
+		
+		foreach ($metaData as $metaDataRow){
+			
+			$metaKey = $metaDataRow['meta_key'];
+			$metaValue = $metaDataRow['meta_value'];
+			
+			$sql .= " AND m.MetaKey = '$metaKey' AND m.MetaValue = '$metaValue'";
+		
+		}
+	}
+
 	//echo $sql;
 	
 	$output = array();
@@ -39,13 +61,13 @@ function getQuestionArtifacts($question_sync_time, $metaData){
 	
 	if(empty($metaData)){
 	
-		$sql .= " as q WHERE CreatedAt >= '$question_sync_time'";
+		$sql .= " as q WHERE CreatedAt >= '$question_sync_time' AND ActiveStatus = 'X'";
 		
 	}
 	else{
 		
 		// Since meta data is provided, we need to filter based on this.
-		$sql .= " as q INNER JOIN meta_data as m ON q.ID = m.QuestionId WHERE q.CreatedAt >= '$question_sync_time'";
+		$sql .= " as q INNER JOIN meta_data as m ON q.ID = m.QuestionId WHERE q.CreatedAt >= '$question_sync_time' AND ActiveStatus = 'X'";
 		
 		foreach ($metaData as $metaDataRow){
 			
@@ -111,7 +133,7 @@ function getQuestionsData($ids){
 		$answersSQL = "SELECT * FROM answers where QuestionId = $qId";
 		$answers = mysql_query($answersSQL, $linkID);
 		
-		$metaSQL = "SELECT * FROM meta_data where QuestionId = $qId";
+		$metaSQL = "SELECT * FROM meta_data where QuestionId = $qId AND MetaKey <> 'sync'";
 		$metaData = mysql_query($metaSQL, $linkID);
 		
 		$optionArray = array();

@@ -3,8 +3,8 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Jun 30, 2013 at 04:22 AM
--- Server version: 5.1.69-cll
+-- Generation Time: Jul 08, 2013 at 02:37 PM
+-- Server version: 5.1.70-cll
 -- PHP Version: 5.3.17
 
 SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
@@ -70,9 +70,10 @@ CREATE TABLE IF NOT EXISTS `questions` (
   `Level` tinyint(4) NOT NULL,
   `ChoiceType` tinyint(4) NOT NULL,
   `CreatedAt` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `ActiveStatus` char(1) NOT NULL,
   PRIMARY KEY (`ID`),
   UNIQUE KEY `ID` (`ID`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=10 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=40 ;
 
 -- --------------------------------------------------------
 
@@ -87,8 +88,22 @@ CREATE TABLE IF NOT EXISTS `quiz` (
   `Level` tinyint(4) NOT NULL,
   `QuestionIds` varchar(100) NOT NULL,
   `CreatedAt` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `ActiveStatus` char(1) NOT NULL,
   PRIMARY KEY (`QuizId`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=5 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=6 ;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `quiz_meta_data`
+--
+
+CREATE TABLE IF NOT EXISTS `quiz_meta_data` (
+  `QuizId` int(11) NOT NULL,
+  `MetaKey` varchar(20) NOT NULL,
+  `MetaValue` varchar(50) NOT NULL,
+  `CreatedAt` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
