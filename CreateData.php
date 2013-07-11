@@ -8,24 +8,20 @@ require('hqf-functions.php');
 createDBConnection();
 
 $pwd = $_POST['pwd'];
-
 $question_text = $_POST['question_text'];
 $level = $_POST['level'];
 $type = $_POST['type'];
-$options = json_decode(stripslashes($_POST['options']));	// Read what is the use of stripslashes
-$answers = json_decode(stripslashes($_POST['answers']));
-$answers_no = $_POST['answers_no'];
-$tags = json_decode(stripslashes($_POST['tags']));
 
-if($pwd != "WeAreTheAdmins:P"){
+$options = json_decode(stripslashes($_POST['options']));
+$answers = json_decode(stripslashes($_POST['answers']));
+$meta = json_decode(stripslashes($_POST['meta']));
+
+
+if($pwd != secret_key ){
 	$message = "You think we are stupid to allow any one ?";
 	die(json_encode($message));
 }
 
-//echo json_encode("Question = ".$question_text.", level = ".$level.", Type = ".$type.", Options= ".$options.", Answers =".$answers." , Answers_no = ".$answers_no." , Tags = ".$tags);
-//echo json_encode( Array( 'options' => $options , 'answers' => $answers) );
-
-//$id=0;
 $log = " ----- DataBase Log ------ <br> ";
 
 	$id = UpdateQuestion( $question_text , $level , $type );
@@ -49,10 +45,10 @@ $log = " ----- DataBase Log ------ <br> ";
 	If(mysql_query($sql,$linkID)) $log .= "<br>Answer ('$id','$answer') sucessfully inserted";	
 	}
 	
-	foreach ( $tags as $tag) 
+	foreach ( $meta as $meta_row ) 
 	{
-	$sql = "INSERT INTO meta_data (QuestionId,MetaKey,MetaValue) VALUES ('$id','tag','$tag') " ;
-	If(mysql_query($sql,$linkID)) $log .= "<br>MetaData ('tag','$tag') sucessfully inserted";
+	$sql = "INSERT INTO meta_data (QuestionId,MetaKey,MetaValue) VALUES ('$id','$meta_row[0]','$meta_row[1]') " ;
+	If(mysql_query($sql,$linkID)) $log .= "<br>MetaData ('$meta_row[0]','$meta_row[1]') sucessfully inserted";
 	}
 	
 	echo json_encode($log);
@@ -67,12 +63,9 @@ function UpdateQuestion($q, $l, $t)
 	//echo json_encode($linkID);
 	IF( mysql_query($qsql,$linkID) ) //successfull entry
 	{
-		$qsql = "SELECT MAX(ID) AS ID FROM questions";
-		$row = mysql_query($qsql, $linkID);
-		$id = mysql_fetch_assoc($row);
-		
-		return ($id['ID'] - 0 );
+		return mysql_insert_id();
 	}
+
 }
 
 ?>

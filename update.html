@@ -14,27 +14,39 @@
 <script type="text/javascript" src="js/jquery.js">
 </script>
 
-<script>
+<!-- My jQuery Functions -->
+<script>	
 $(document).ready(function(){
-
-$("#clear-output").click(function(){
+	
+	// Clear Page
+	$("#clear-output").click(function(){
 		$("#output").empty();
 	});
+
+	$("#read").click(function(){
+		$secret_key = $("#key").val();
+		$qid = $("#qid").val();	
+		read_from_db($secret_key,$qid);	
+	});
 	
-$("#save").click(function(){ save_insert(); });
+	$("#save").click(function()
+	{
+		save_update( );
+	});
 
 });
 </script>
 
-<body onLoad="clear_all_inputs();" >
+<body onLoad="clear_all_inputs(); refresh_update_ui();">
+
 
 <div id="content" style="position:relative; top:80px; left:220px;">
 
 <p>Secret Key: <input type="password" id="key"></p>
 
-<input type="text" id="qid" style="display:none;" />
-
-<table cellpadding="10" >
+Enter Question Id : <input id="qid" type="text" style="width:50px;" /> <input type="button" value="Read" id="read" />
+<div id="data">
+<table  cellpadding="10" >
 	<tr>
 		<td>Question</td><td><textarea id="question" class="questn" ></textarea></td>
 	</tr>
@@ -80,6 +92,7 @@ $("#save").click(function(){ save_insert(); });
 	</tr>
 	
 </table>
+</div>
 
 <p><button id="clear-output">Clear Output Message Area</button></p>
 
@@ -87,6 +100,7 @@ $("#save").click(function(){ save_insert(); });
 </p>
 
 </div>
+
 
 </body>
 	

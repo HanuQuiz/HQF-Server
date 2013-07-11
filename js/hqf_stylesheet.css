@@ -1,0 +1,17 @@
+.ans_inp{
+		width:100%;
+	}
+	
+body{
+background:url('../images/title.png'); 
+background-size:70% 200px;
+background-repeat:no-repeat;
+}
+
+.questn{
+border:none;
+border-style:dotted;
+border-width:1px;
+width:350px;
+height:80px;
+}
