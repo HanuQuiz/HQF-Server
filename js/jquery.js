@@ -47,17 +47,22 @@ function read_inputs( )
 		question.meta[i][0] = "tag";
 		question.meta[i][1] = tags[i];
 	}
+
+	/*
+	If Free is checked, then Free and Premium should be inserted
+	If Premium is checked, then only Premium should be inserted
+	*/
 	
 	question.meta[i] = new Array();
 	question.meta[i][0] = "sync";
-	question.meta[i][1] = "Free"; //default free sync
+	question.meta[i][1] = "Premium"; //Premium is always inserted
 	
-	if($("#cat_premium").attr('checked') == "checked") // If premium category is checked, sync to premium version as well
+	if($("#cat_free").attr('checked') == "checked") // If free category is checked, sync to free version as well
 	{
 	i = question.meta.length;
 	question.meta[i] = new Array();
 	question.meta[i][0] = "sync";
-	question.meta[i][1] = "Premium"; //default free sync	
+	question.meta[i][1] = "Free"; //free sync	
 	}
 	
 	}

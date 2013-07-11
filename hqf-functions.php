@@ -16,7 +16,6 @@ function createDBConnection(){
 function getQuizArtifacts($quiz_sync_time, $metaData){
 	
 	global $linkID;
-	//$sql = "SELECT QuizId, CreatedAt FROM quiz WHERE CreatedAt >= '$quiz_sync_time' AND ActiveStatus = 'X'";
 	$sql = "SELECT q.QuizId, q.CreatedAt FROM quiz";
 	
 	if(empty($metaData)){
@@ -27,7 +26,7 @@ function getQuizArtifacts($quiz_sync_time, $metaData){
 	else{
 	
 		// Since meta data is provided, we need to filter based on this.
-		$sql .= " as q INNER JOIN quiz_meta_data as m ON q.QuizId = m.QuizId WHERE q.CreatedAt >= '$question_sync_time' AND ActiveStatus = 'X'";
+		$sql .= " as q INNER JOIN quiz_meta_data as m ON q.QuizId = m.QuizId WHERE q.CreatedAt >= '$quiz_sync_time' AND ActiveStatus = 'X'";
 		
 		foreach ($metaData as $metaDataRow){
 			
