@@ -105,8 +105,20 @@ function getQuizData($ids){
 	
 	$result = mysql_query($sql, $linkID);
 	
-	while($row = mysql_fetch_assoc($result)) {
-		$output[] = $row;
+	while($quiz = mysql_fetch_assoc($result)) {
+
+		$qId = $quiz['QuizId'];
+		
+		$metaSQL = "SELECT * FROM quiz_meta_data where QuizId = $qId AND MetaKey = 'sync'";
+		$metaData = mysql_query($metaSQL, $linkID);
+		
+		$metaArray = array();
+		while($meta = mysql_fetch_assoc($metaData)) {
+			$metaArray[] = $meta;
+		}
+		
+		$qRow = array('quiz' => $quiz, 'meta' => $metaArray);
+		$output[] = $qRow;
 	}
 	
 	return $output;
@@ -146,9 +158,11 @@ function getQuestionsData($ids){
 		}
 		
 		$metaArray = array();
+		/* DO NOT Return any meta data
 		while($meta = mysql_fetch_assoc($metaData)) {
 			$metaArray[] = $meta;
 		}
+		*/
 		
 		$qRow = array('question' => $question, 'options' => $optionArray, 'answers' => $answerArray, 'meta' => $metaArray);
 		
