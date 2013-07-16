@@ -4,6 +4,7 @@
 	
 //Other globals
 	var password="";
+	var question_list = new Array();
 	
 function initialize_object()
 {
@@ -202,4 +203,62 @@ for(i=0;i<question.answers.length;i++)
 	{
 	document.getElementById("ans_opt_"+question.answers[i]).checked = "checked";
 	}
+}
+
+function save_quiz( )
+{
+	//alert("called");
+	
+	var secret_key = document.getElementById("secret_key").value;
+	var descr = document.getElementById("description").value;
+	var qids = document.getElementById("questids").value;
+	var level = document.getElementById("level").value;
+	var tag = document.getElementById("tags").value;
+	var meta = new Array();
+	
+	var tags = new Array();
+	tags = tag.split(",");
+	
+	var j=0;
+	
+	for(i=0;i<tags.length;i++)
+	{
+		if(tags[i] != "")
+		{
+		meta[j] = new Array();
+		meta[j][0] = "tag";
+		meta[j][1] = tags[i];
+		j++;
+		}
+	}
+	
+	var count = qids.split(",").splice("", qids.split(",").length ).length;
+	//var count = qids.split(",").length;
+	
+	//alert(count);
+	
+	meta[j] = new Array();
+	meta[j][0] = "sync";
+	meta[j][1] = "Premium";
+	
+	if( document.getElementById("cat_free").checked == true )
+		{
+		j++;
+		meta[j] = new Array();
+		meta[j][0] = "sync";
+		meta[j][1] = "Free";
+		}
+		
+		//alert(""+JSON.stringify(meta));
+		
+		$.post("InsertQuiz.php",{
+		pwd:secret_key,
+		description:descr,
+		level:level,
+		qids:qids,
+		count:count,
+		meta:JSON.stringify(meta),
+		},function(data,status){
+				document.getElementById("output").innerHTML = JSON.stringify(data);
+				});
 }
