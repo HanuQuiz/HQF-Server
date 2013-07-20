@@ -22,9 +22,17 @@ if($question_sync_time ==  "" && $quiz_sync_time == ""){
 $meta_data = $_POST['meta_data'];
 $meta_data = stripslashes($meta_data);
 
-// Testing
-//echo $question_sync_time;
-//echo "<br>";
+// Convert to system time zone
+$GMT = new DateTimeZone("GMT");
+$system_TZ = new DateTimeZone(SERVER_TIME_ZONE);
+
+$ques_sync_time = new DateTime( $question_sync_time, $GMT);
+$ques_sync_time->setTimezone( $system_TZ );
+$question_sync_time = $ques_sync_time->format('Y-m-d H:i:s'); 
+
+$quiz_sync_time = new DateTime( $quiz_sync_time, $GMT);
+$quiz_sync_time->setTimezone( $system_TZ );
+$quiz_sync_time = $quiz_sync_time->format('Y-m-d H:i:s'); 
 
 if($meta_data == ""){
 	$metaData = "";
