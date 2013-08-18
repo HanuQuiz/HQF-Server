@@ -64,6 +64,30 @@ $(document).ready(function(){
 		});
 		
 	});
+
+	$("#quiz-questions").click(function(){
+		
+		var secret_key = $("#secret-key").val();
+		var quiz_ids = $("#quiz-ids").val();
+		$.post("QuizUtility.php", {pwd:secret_key,quiz_id:quiz_ids,code:"quiz-questions"},
+		function(data,status){
+			$("#output").append(data);
+			$("#output").append("<br>");
+		});
+		
+	});
+
+	$("#questions-by-tag").click(function(){
+		
+		var secret_key = $("#secret-key").val();
+		var tag = $("#tag").val();
+		$.post("QuizUtility.php", {pwd:secret_key,tag:tag,code:"questions-by-tag"},
+		function(data,status){
+			$("#output").append(data);
+			$("#output").append("<br>");
+		});
+		
+	});
 	
 });
 
@@ -76,6 +100,7 @@ $(document).ready(function(){
 <p>
 	<input type="button" value="Insert New questions" onClick="javascript:document.location='insert.html';" />
 	<input type="button" value="Update question" onClick="javascript:document.location='update.html';" />
+	<input type="button" value="Insert New Quiz" onClick="javascript:document.location='insertQuiz.html';" />
 </p>
 
 <p>Secret Key: <input type="password" id="secret-key">
@@ -96,7 +121,14 @@ Question Ids: <input type="text" id="question-ids"/>
 
 <b>Fetch Quizzes</b><br>
 Quiz Ids: <input type="text" id="quiz-ids"/>
-<button id="select-quizzes">Select Quizzes</button><br>
+<button id="select-quizzes">Select Quizzes</button>
+<button id="quiz-questions">Show Questions</button>
+<br><br>
+
+<b>TAG</b><br>
+Tag: <input type="text" id="tag"/>
+<button id="questions-by-tag">Show Questions</button>
+<br>
 
 <br>
 

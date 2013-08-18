@@ -172,4 +172,28 @@ function getQuestionsData($ids){
 	return $output;
 }
 
+function getQuestionsInQuiz($quizId){
+	
+	global $linkID;
+
+	$sql = "CALL get_questions_in_quiz($quizId)";
+
+	$result = mysql_query($sql, $linkID);
+
+	return $result;
+
+}
+
+function getQuestionsByTag($tag){
+	
+	global $linkID;
+
+	$sql = "CALL get_questions_by_tag('$tag')";
+
+	$result = mysql_query($sql, $linkID);
+
+	return $result;
+
+}
+
 ?>

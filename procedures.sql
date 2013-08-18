@@ -15,3 +15,20 @@ from questions as q inner join meta_data as m on q.ID = m.QuestionId
 where m.MetaKey = 'tag' and m.MetaValue = Tag
 and q.Level = Level and q.ActiveStatus = ActiveStatus
 order by QuestionID;
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `get_questions_by_tag`(IN `Tag` VARCHAR(50))
+    READS SQL DATA
+    SQL SECURITY INVOKER
+select m.MetaValue, q.ID as QuestionID, q.Question, q.Level, q.ActiveStatus 
+from questions as q inner join meta_data as m on q.ID = m.QuestionId 
+where m.MetaKey = 'tag' and m.MetaValue = Tag
+order by QuestionID;
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `get_questions_in_quiz`(IN `QuizId` INT)
+    READS SQL DATA
+    SQL SECURITY INVOKER
+SELECT  qs.ID, qs.Question, qs.Level
+FROM    questions qs
+        INNER JOIN quiz qz
+            ON FIND_IN_SET(qs.ID, qz.QuestionIds) > 0
+WHERE   qz.QuizId = QuizId;
