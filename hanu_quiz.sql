@@ -1,20 +1,14 @@
 -- phpMyAdmin SQL Dump
--- version 3.5.8
+-- version 4.0.4.2
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Jul 08, 2013 at 02:37 PM
+-- Generation Time: Aug 18, 2013 at 03:16 PM
 -- Server version: 5.1.70-cll
 -- PHP Version: 5.3.17
 
-SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
+SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
-
-
-/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
-/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
-/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8 */;
 
 --
 -- Database: `varunver_AQ`
@@ -29,7 +23,8 @@ SET time_zone = "+00:00";
 CREATE TABLE IF NOT EXISTS `answers` (
   `QuestionId` int(11) NOT NULL,
   `OptionId` tinyint(4) NOT NULL,
-  `CreatedAt` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+  `CreatedAt` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  UNIQUE KEY `QuestionId` (`QuestionId`,`OptionId`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
@@ -42,7 +37,8 @@ CREATE TABLE IF NOT EXISTS `meta_data` (
   `QuestionId` int(11) NOT NULL,
   `MetaKey` varchar(20) NOT NULL,
   `MetaValue` varchar(50) NOT NULL,
-  `CreatedAt` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+  `CreatedAt` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  UNIQUE KEY `QuestionId` (`QuestionId`,`MetaKey`,`MetaValue`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
@@ -55,7 +51,8 @@ CREATE TABLE IF NOT EXISTS `options` (
   `QuestionId` int(11) NOT NULL,
   `OptionId` tinyint(4) NOT NULL,
   `OptionValue` text NOT NULL,
-  `CreatedAt` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+  `CreatedAt` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  UNIQUE KEY `QuestionId` (`QuestionId`,`OptionId`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
@@ -73,7 +70,7 @@ CREATE TABLE IF NOT EXISTS `questions` (
   `ActiveStatus` char(1) NOT NULL,
   PRIMARY KEY (`ID`),
   UNIQUE KEY `ID` (`ID`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=40 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=144 ;
 
 -- --------------------------------------------------------
 
@@ -90,7 +87,7 @@ CREATE TABLE IF NOT EXISTS `quiz` (
   `CreatedAt` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `ActiveStatus` char(1) NOT NULL,
   PRIMARY KEY (`QuizId`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=6 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=17 ;
 
 -- --------------------------------------------------------
 
@@ -102,9 +99,7 @@ CREATE TABLE IF NOT EXISTS `quiz_meta_data` (
   `QuizId` int(11) NOT NULL,
   `MetaKey` varchar(20) NOT NULL,
   `MetaValue` varchar(50) NOT NULL,
-  `CreatedAt` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+  `CreatedAt` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  UNIQUE KEY `QuizId` (`QuizId`,`MetaKey`,`MetaValue`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
-/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
-/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
-/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;

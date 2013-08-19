@@ -32,3 +32,17 @@ FROM    questions qs
         INNER JOIN quiz qz
             ON FIND_IN_SET(qs.ID, qz.QuestionIds) > 0
 WHERE   qz.QuizId = QuizId;
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `update_question_status`(IN `Quiz_Id` INT, IN `Status` VARCHAR(1))
+    MODIFIES SQL DATA
+    SQL SECURITY INVOKER
+UPDATE questions SET ActiveStatus = Status 
+WHERE FIND_IN_SET(ID, (SELECT QuestionIds from quiz where QuizId = Quiz_Id)) > 0
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `update_quiz_status`(IN `Quiz_Id` INT, IN `Status` VARCHAR(1))
+    MODIFIES SQL DATA
+    SQL SECURITY INVOKER
+begin
+UPDATE quiz set ActiveStatus = Status where QuizId = Quiz_Id;
+call update_question_status (Quiz_Id,Status);
+end

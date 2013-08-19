@@ -24,6 +24,7 @@ if($code == "quiz-questions"){
 		"<th>ID</th>".
 		"<th>Question</th>".
 		"<th>Level</th>".
+		"<th>Status</th>".
 		"</tr>";
 		
 	while($row = mysql_fetch_assoc($result)) {
@@ -33,6 +34,7 @@ if($code == "quiz-questions"){
 		$html .= "<td>".$row['ID']."</td>";
 		$html .= "<td>".$row['Question']."</td>";
 		$html .= "<td>".$row['Level']."</td>";
+		$html .= "<td>".$row['ActiveStatus']."</td>";
 		$html .= "</td>";
 		
 		$html .= "</tr>";
@@ -72,6 +74,36 @@ if($code == "questions-by-tag"){
 	}	
 	
 	echo "<br>" . $html;
+
+}
+
+if($code == "activate-quiz"){
+
+	$quiz_id = $_POST['quiz_id'];
+
+	$result = setQuizStatus($quiz_id,'X');
+	
+	if($result){
+		echo "Quiz Activated successfully";
+	}
+	else{
+		echo "Quiz Activation Failed !";
+	}
+
+}
+
+if($code == "deactivate-quiz"){
+
+	$quiz_id = $_POST['quiz_id'];
+
+	$result = setQuizStatus($quiz_id,'');
+	
+	if($result){
+		echo "Quiz De-Activated successfully";
+	}
+	else{
+		echo "Quiz De-Activation Failed !";
+	}
 
 }
 

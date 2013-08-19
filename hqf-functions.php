@@ -196,4 +196,15 @@ function getQuestionsByTag($tag){
 
 }
 
+function setQuizStatus($quizId, $status){
+
+	global $linkID;
+
+	$sql = "CALL update_quiz_status($quizId,'$status')";
+
+	$result = mysql_query($sql, $linkID);
+
+	return $result;
+}
+
 ?>

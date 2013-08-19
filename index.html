@@ -77,6 +77,30 @@ $(document).ready(function(){
 		
 	});
 
+	$("#activate-quiz").click(function(){
+		
+		var secret_key = $("#secret-key").val();
+		var quiz_ids = $("#quiz-ids").val();
+		$.post("QuizUtility.php", {pwd:secret_key,quiz_id:quiz_ids,code:"activate-quiz"},
+		function(data,status){
+			$("#output").append(data);
+			$("#output").append("<br>");
+		});
+		
+	});
+
+	$("#deactivate-quiz").click(function(){
+		
+		var secret_key = $("#secret-key").val();
+		var quiz_ids = $("#quiz-ids").val();
+		$.post("QuizUtility.php", {pwd:secret_key,quiz_id:quiz_ids,code:"deactivate-quiz"},
+		function(data,status){
+			$("#output").append(data);
+			$("#output").append("<br>");
+		});
+		
+	});
+
 	$("#questions-by-tag").click(function(){
 		
 		var secret_key = $("#secret-key").val();
@@ -123,6 +147,8 @@ Question Ids: <input type="text" id="question-ids"/>
 Quiz Ids: <input type="text" id="quiz-ids"/>
 <button id="select-quizzes">Select Quizzes</button>
 <button id="quiz-questions">Show Questions</button>
+<button id="activate-quiz">Activate Quiz</button>
+<button id="deactivate-quiz">De-Activate Quiz</button>
 <br><br>
 
 <b>TAG</b><br>
