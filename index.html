@@ -112,6 +112,29 @@ $(document).ready(function(){
 		});
 		
 	});
+
+	$("#ungrouped-questions-by-tag").click(function(){
+		
+		var secret_key = $("#secret-key").val();
+		var tag = $("#tag").val();
+		$.post("QuizUtility.php", {pwd:secret_key,tag:tag,code:"ungrouped-questions-by-tag"},
+		function(data,status){
+			$("#output").append(data);
+			$("#output").append("<br>");
+		});
+		
+	});
+
+	$("#all-ungrouped-questions").click(function(){
+		
+		var secret_key = $("#secret-key").val();
+		$.post("QuizUtility.php", {pwd:secret_key,code:"all-ungrouped-questions"},
+		function(data,status){
+			$("#output").append(data);
+			$("#output").append("<br>");
+		});
+		
+	});
 	
 });
 
@@ -153,7 +176,9 @@ Quiz Ids: <input type="text" id="quiz-ids"/>
 
 <b>TAG</b><br>
 Tag: <input type="text" id="tag"/>
-<button id="questions-by-tag">Show Questions</button>
+<button id="questions-by-tag">Show All Questions for Tag</button>
+<button id="ungrouped-questions-by-tag">Show Un-Grouped Questions for Tag</button>
+<button id="all-ungrouped-questions">Show All Un-Grouped Questions</button>
 <br>
 
 <br>

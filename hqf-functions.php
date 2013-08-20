@@ -196,6 +196,30 @@ function getQuestionsByTag($tag){
 
 }
 
+function getUnGroupedQuestionsByTag($tag){
+	
+	global $linkID;
+
+	$sql = "CALL get_ungrouped_questions_by_tag('$tag')";
+
+	$result = mysql_query($sql, $linkID);
+
+	return $result;
+
+}
+
+function getAllUnGroupedQuestions(){
+	
+	global $linkID;
+
+	$sql = "CALL get_all_ungrouped_questions()";
+
+	$result = mysql_query($sql, $linkID);
+
+	return $result;
+
+}
+
 function setQuizStatus($quizId, $status){
 
 	global $linkID;

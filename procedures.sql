@@ -27,7 +27,7 @@ order by QuestionID;
 CREATE DEFINER=`root`@`localhost` PROCEDURE `get_questions_in_quiz`(IN `QuizId` INT)
     READS SQL DATA
     SQL SECURITY INVOKER
-SELECT  qs.ID, qs.Question, qs.Level
+SELECT  qs.ID, qs.Question, qs.Level, qs.ActiveStatus
 FROM    questions qs
         INNER JOIN quiz qz
             ON FIND_IN_SET(qs.ID, qz.QuestionIds) > 0
@@ -37,7 +37,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `update_question_status`(IN `Quiz_Id
     MODIFIES SQL DATA
     SQL SECURITY INVOKER
 UPDATE questions SET ActiveStatus = Status 
-WHERE FIND_IN_SET(ID, (SELECT QuestionIds from quiz where QuizId = Quiz_Id)) > 0
+WHERE FIND_IN_SET(ID, (SELECT QuestionIds from quiz where QuizId = Quiz_Id)) > 0;
 
 CREATE DEFINER=`root`@`localhost` PROCEDURE `update_quiz_status`(IN `Quiz_Id` INT, IN `Status` VARCHAR(1))
     MODIFIES SQL DATA
@@ -45,4 +45,24 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `update_quiz_status`(IN `Quiz_Id` IN
 begin
 UPDATE quiz set ActiveStatus = Status where QuizId = Quiz_Id;
 call update_question_status (Quiz_Id,Status);
-end
+end;
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `get_ungrouped_questions_by_tag`(IN `Tag` VARCHAR(20))
+    READS SQL DATA
+    SQL SECURITY INVOKER
+SELECT meta.MetaValue, qs.Level, qs.ID, qs.Question, qs.ActiveStatus
+FROM questions qs
+LEFT OUTER JOIN quiz qz ON FIND_IN_SET(qs.ID, qz.QuestionIds) > 0
+inner join meta_data as meta on meta.QuestionId = qs.ID and meta.MetaKey = 'tag' and meta.MetaValue = Tag
+where qz.QuizId is null
+order by qz.QuizId, meta.MetaValue, qs.Level, qs.ID;
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `get_all_ungrouped_questions`()
+    READS SQL DATA
+    SQL SECURITY INVOKER
+SELECT meta.MetaValue, qs.Level, qs.ID, qs.Question, qs.ActiveStatus
+FROM questions qs
+LEFT OUTER JOIN quiz qz ON FIND_IN_SET(qs.ID, qz.QuestionIds) > 0
+inner join meta_data as meta on meta.QuestionId = qs.ID and meta.MetaKey = 'tag'
+where qz.QuizId is null
+order by meta.MetaValue, qs.Level, qs.ID;

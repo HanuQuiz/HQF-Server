@@ -77,6 +77,72 @@ if($code == "questions-by-tag"){
 
 }
 
+if($code == "ungrouped-questions-by-tag"){
+
+	$tag = $_POST['tag'];
+
+	$result = getUnGroupedQuestionsByTag($tag);
+	
+	$html = "<table border='1'>";
+	$html .= "<tr>".
+		"<th>TAG</th>".
+		"<th>Level</th>".
+		"<th>ID</th>".
+		"<th>Question</th>".
+		"<th>Status</th>".
+		"</tr>";
+		
+	while($row = mysql_fetch_assoc($result)) {
+			
+		$html .= "<tr>";
+	
+		$html .= "<td>".$row['MetaValue']."</td>";
+		$html .= "<td>".$row['Level']."</td>";
+		$html .= "<td>".$row['ID']."</td>";
+		$html .= "<td>".$row['Question']."</td>";
+		$html .= "<td>".$row['ActiveStatus']."</td>";
+		$html .= "</td>";
+		
+		$html .= "</tr>";
+
+	}	
+	
+	echo "<br>" . $html;
+
+}
+
+if($code == "all-ungrouped-questions"){
+
+	$result = getAllUnGroupedQuestions();
+	
+	$html = "<table border='1'>";
+	$html .= "<tr>".
+		"<th>TAG</th>".
+		"<th>Level</th>".
+		"<th>ID</th>".
+		"<th>Question</th>".
+		"<th>Status</th>".
+		"</tr>";
+		
+	while($row = mysql_fetch_assoc($result)) {
+			
+		$html .= "<tr>";
+	
+		$html .= "<td>".$row['MetaValue']."</td>";
+		$html .= "<td>".$row['Level']."</td>";
+		$html .= "<td>".$row['ID']."</td>";
+		$html .= "<td>".$row['Question']."</td>";
+		$html .= "<td>".$row['ActiveStatus']."</td>";
+		$html .= "</td>";
+		
+		$html .= "</tr>";
+
+	}	
+	
+	echo "<br>" . $html;
+
+}
+
 if($code == "activate-quiz"){
 
 	$quiz_id = $_POST['quiz_id'];
