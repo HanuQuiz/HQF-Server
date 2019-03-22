@@ -36,19 +36,19 @@ $log = " ----- DataBase Log ------ <br> ";
 	{
 	$opt_id++;
 	$sql = "INSERT INTO options (QuestionId,OptionId,OptionValue) VALUES ('$id','$opt_id','$opt') " ;
-	If(mysql_query($sql,$linkID)) $log .= "<br>Option ('$opt_id','$opt') sucessfully inserted";
+	If(mysqli_query($sql,$linkID)) $log .= "<br>Option ('$opt_id','$opt') sucessfully inserted";
 	}
 	
 	foreach ( $answers as $answer ) 
 	{
 	$sql = "INSERT INTO answers (QuestionId,OptionId) VALUES ('$id','$answer') " ;
-	If(mysql_query($sql,$linkID)) $log .= "<br>Answer ('$id','$answer') sucessfully inserted";	
+	If(mysqli_query($sql,$linkID)) $log .= "<br>Answer ('$id','$answer') sucessfully inserted";	
 	}
 	
 	foreach ( $meta as $meta_row ) 
 	{
 	$sql = "INSERT INTO meta_data (QuestionId,MetaKey,MetaValue) VALUES ('$id','$meta_row[0]','$meta_row[1]') " ;
-	If(mysql_query($sql,$linkID)) $log .= "<br>MetaData ('$meta_row[0]','$meta_row[1]') sucessfully inserted";
+	If(mysqli_query($sql,$linkID)) $log .= "<br>MetaData ('$meta_row[0]','$meta_row[1]') sucessfully inserted";
 	}
 	
 	echo json_encode($log);
@@ -61,9 +61,9 @@ function UpdateQuestion($q, $l, $t)
 	//echo json_encode("Question = ".$q.", level = ".$l.", Type = ".$t);
 	$qsql = "INSERT INTO questions (Question,Level,ChoiceType) VALUES ('$q','$l','$t')" ;
 	//echo json_encode($linkID);
-	IF( mysql_query($qsql,$linkID) ) //successfull entry
+	IF( mysqli_query($qsql,$linkID) ) //successfull entry
 	{
-		return mysql_insert_id();
+		return mysqli_insert_id();
 	}
 
 }
