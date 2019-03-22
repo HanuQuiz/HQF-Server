@@ -9,7 +9,7 @@ function createDBConnection(){
 	global $linkID;
 	
 	$linkID = mysqli_connect(DB_HOST, DB_USER, DB_PASSWORD) or die("Could not connect to host.");
-	mysqli_select_db(DB_NAME, $linkID) or die("Could not find database.");
+	mysqli_select_db($linkID, DB_NAME) or die("Could not find database.");
 
 }
 
@@ -43,7 +43,7 @@ function getQuizArtifacts($quiz_sync_time, $metaData){
 	$output = array();
 	
 	// Execute Query
-	$result = mysqli_query($sql, $linkID);
+	$result = mysqli_query($linkID, $sql);
 	
 	while($row = mysqli_fetch_assoc($result)) {
 		$output[] = $row;
@@ -85,7 +85,7 @@ function getQuestionArtifacts($question_sync_time, $metaData){
 	$output = array();
 	
 	// Execute Query
-	$result = mysqli_query($sql, $linkID);
+	$result = mysqli_query($linkID, $sql);
 	
 	while($row = mysqli_fetch_assoc($result)) {
 		$output[] = $row;
@@ -103,14 +103,14 @@ function getQuizData($ids){
 	
 	$sql = "SELECT * FROM quiz WHERE QuizId in ($ids)";
 	
-	$result = mysqli_query($sql, $linkID);
+	$result = mysqli_query($linkID, $sql);
 	
 	while($quiz = mysqli_fetch_assoc($result)) {
 
 		$qId = $quiz['QuizId'];
 		
 		$metaSQL = "SELECT * FROM quiz_meta_data where QuizId = $qId AND MetaKey = 'sync'";
-		$metaData = mysqli_query($metaSQL, $linkID);
+		$metaData = mysqli_query($linkID, $sql);
 		
 		$metaArray = array();
 		while($meta = mysqli_fetch_assoc($metaData)) {
@@ -132,20 +132,20 @@ function getQuestionsData($ids){
 	
 	$sql = "SELECT * FROM questions WHERE ID in ($ids)";
 	
-	$questions = mysqli_query($sql, $linkID);
+	$questions = mysqli_query($linkID, $sql);
 	
 	while($question = mysqli_fetch_assoc($questions)) {
 		
 		$qId = $question['ID'];
 		
 		$optionsSQL = "SELECT * FROM options where QuestionId = $qId";
-		$options = mysqli_query($optionsSQL, $linkID);
+		$options = mysqli_query($linkID, $optionsSQL);
 		
 		$answersSQL = "SELECT * FROM answers where QuestionId = $qId";
-		$answers = mysqli_query($answersSQL, $linkID);
+		$answers = mysqli_query($linkID, $answersSQL);
 		
 		$metaSQL = "SELECT * FROM meta_data where QuestionId = $qId AND MetaKey <> 'sync'";
-		$metaData = mysqli_query($metaSQL, $linkID);
+		$metaData = mysqli_query($linkID, $metaSQL);
 		
 		$optionArray = array();
 		while($option = mysqli_fetch_assoc($options)) {
@@ -178,7 +178,7 @@ function getQuestionsInQuiz($quizId){
 
 	$sql = "CALL get_questions_in_quiz($quizId)";
 
-	$result = mysqli_query($sql, $linkID);
+	$result = mysqli_query($linkID, $sql);
 
 	return $result;
 
@@ -190,7 +190,7 @@ function getQuestionsByTag($tag){
 
 	$sql = "CALL get_questions_by_tag('$tag')";
 
-	$result = mysqli_query($sql, $linkID);
+	$result = mysqli_query($linkID, $sql);
 
 	return $result;
 
@@ -202,7 +202,7 @@ function getUnGroupedQuestionsByTag($tag){
 
 	$sql = "CALL get_ungrouped_questions_by_tag('$tag')";
 
-	$result = mysqli_query($sql, $linkID);
+	$result = mysqli_query($linkID, $sql);
 
 	return $result;
 
@@ -214,7 +214,7 @@ function getAllUnGroupedQuestions(){
 
 	$sql = "CALL get_all_ungrouped_questions()";
 
-	$result = mysqli_query($sql, $linkID);
+	$result = mysqli_query($linkID, $sql);
 
 	return $result;
 
@@ -226,7 +226,7 @@ function setQuizStatus($quizId, $status){
 
 	$sql = "CALL update_quiz_status($quizId,'$status')";
 
-	$result = mysqli_query($sql, $linkID);
+	$result = mysqli_query($linkID, $sql);
 
 	return $result;
 }
